@@ -1,3 +1,4 @@
+// Enzo Peres Afonso 2024
 #include <Stepper.h>
 #include <DHT.h>  // Include the DHT library
 
