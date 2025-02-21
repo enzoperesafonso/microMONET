@@ -1,4 +1,25 @@
-// Enzo Peres Afonso 2024
+/*
+ * MicroMONET Firmware
+ * 
+ * This firmware controls a dual-axis telescope mount (azimuth and altitude) using stepper motors.
+ * It supports commands for slewing to specific positions, controlling LEDs, reading temperature
+ * and humidity from a DHT11 sensor, and aborting slews. Communication is done via serial.
+ * 
+ * Commands:
+ * - GET_POS: Get current altitude and azimuth.
+ * - ALT:<value> AZ:<value>: Slew to a specific altitude and azimuth.
+ * - SET_SPEED <value>: Set motor speed (1-15 RPM).
+ * - LED_ON / LED_OFF: Turn the main LED on/off.
+ * - CCD_ON / CCD_OFF: Turn the CCD LED on/off.
+ * - GET_TEMP: Read temperature from DHT11.
+ * - GET_HUMI: Read humidity from DHT11.
+ * - ABORT: Abort the current slew.
+ * 
+ * Author: Enzo Peres Afonso
+ * Date: 2025
+ * Version: 1.0
+ */
+ 
 #include <Stepper.h>
 #include <DHT.h>  // Include the DHT library
 
