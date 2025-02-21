@@ -1,7 +1,7 @@
 /*
  * MicroMONET Firmware
  * 
- * This firmware controls a dual-axis telescope mount (azimuth and altitude) using stepper motors.
+ * This firmware controls a dual-axis telescope mount (azimuth and altitude) using 27BYJ-28 stepper motors.
  * It supports commands for slewing to specific positions, controlling LEDs, reading temperature
  * and humidity from a DHT11 sensor, and aborting slews. Communication is done via serial.
  * 
@@ -19,16 +19,16 @@
  * Date: 2025
  * Version: 1.0
  */
- 
+
 #include <Stepper.h>
 #include <DHT.h>  // Include the DHT library
 
-#define STEPS_PER_REV 2048
-#define DEFAULT_SPEED 10
-#define LED_PIN 13
-#define CCD_LED_PIN 12
-#define DHTPIN 2       // Pin where the DHT11 is connected
-#define DHTTYPE DHT11  // DHT 11 sensor type
+#define STEPS_PER_REV 2048  // Steps per revolution for 27BYJ-28
+#define DEFAULT_SPEED 10    // Default stepper speed (RPM)
+#define LED_PIN 13          // General status LED
+#define CCD_LED_PIN 12      // CCD LED
+#define DHTPIN 2            // Pin where the DHT11 is connected
+#define DHTTYPE DHT11       // DHT 11 sensor type
 
 Stepper azimuthMotor(STEPS_PER_REV, 8, 10, 9, 11);
 Stepper altitudeMotor(STEPS_PER_REV, 4, 6, 5, 7);
@@ -77,14 +77,14 @@ void moveBothSteppersInterruptible(int stepsAz, int stepsAlt) {
     if (i < abs(stepsAz)) {
       azimuthMotor.step(stepsAz > 0 ? 1 : -1);
       stepsMovedAz += (stepsAz > 0 ? 1 : -1);
-      currentAz += (stepsAz > 0 ? 1 : -1) / (STEPS_PER_REV / 360.0); // Update currentAz in real-time
+      currentAz += (stepsAz > 0 ? 1 : -1) / (STEPS_PER_REV / 360.0);  // Update currentAz in real-time
     }
 
     // Move altitude motor
     if (i < abs(stepsAlt)) {
       altitudeMotor.step(stepsAlt > 0 ? 1 : -1);
       stepsMovedAlt += (stepsAlt > 0 ? 1 : -1);
-      currentAlt += (stepsAlt > 0 ? 1 : -1) / (STEPS_PER_REV / 360.0); // Update currentAlt in real-time
+      currentAlt += (stepsAlt > 0 ? 1 : -1) / (STEPS_PER_REV / 360.0);  // Update currentAlt in real-time
     }
   }
 
