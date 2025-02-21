@@ -50,22 +50,28 @@ void moveBothSteppersInterruptible(int stepsAz, int stepsAlt) {
       processCommand(input);
     }
     if (abortSlew) break;
+
+    // Move azimuth motor
     if (i < abs(stepsAz)) {
       azimuthMotor.step(stepsAz > 0 ? 1 : -1);
       stepsMovedAz += (stepsAz > 0 ? 1 : -1);
-      currentAz += (stepsAz > 0 ? 1 : -1) / (STEPS_PER_REV / 360.0);
+      currentAz += (stepsAz > 0 ? 1 : -1) / (STEPS_PER_REV / 360.0); // Update currentAz in real-time
     }
+
+    // Move altitude motor
     if (i < abs(stepsAlt)) {
       altitudeMotor.step(stepsAlt > 0 ? 1 : -1);
       stepsMovedAlt += (stepsAlt > 0 ? 1 : -1);
-      currentAlt += (stepsAlt > 0 ? 1 : -1) / (STEPS_PER_REV / 360.0);
+      currentAlt += (stepsAlt > 0 ? 1 : -1) / (STEPS_PER_REV / 360.0); // Update currentAlt in real-time
     }
   }
 
   // Final position update in case of abort
   if (abortSlew) {
-    currentAz += (stepsMovedAz / (STEPS_PER_REV / 360.0));
-    currentAlt += (stepsMovedAlt / (STEPS_PER_REV / 360.0));
+    Serial.print("Aborted at ALT: ");
+    Serial.print(currentAlt);
+    Serial.print(" AZ: ");
+    Serial.println(currentAz);
   }
 }
 
@@ -132,25 +138,25 @@ void processCommand(String input) {
       Serial.print(temperature);
       Serial.println(" °C");
     }
-    else if (input == "GET_HUMI") {
-      // Read humudity from DHT11
-      float humidity = dht.readHumidity();
+  } else if (input == "GET_HUMI") {
+    // Read humidity from DHT11
+    float humidity = dht.readHumidity();
 
-      // Check if readings are valid
-      if (isnan(humidity)) {
-        Serial.println("Failed to read from DHT sensor!");
-      } else {
-        Serial.print("Humidity: ");
-        Serial.print(humidity);
-        Serial.println(" %");
-      }
+    // Check if readings are valid
+    if (isnan(humidity)) {
+      Serial.println("Failed to read from DHT sensor!");
+    } else {
+      Serial.print("Humidity: ");
+      Serial.print(humidity);
+      Serial.println(" %");
     }
   }
+}
 
-  void loop() {
-    if (Serial.available()) {
-      String input = Serial.readStringUntil('\n');
-      input.trim();
-      processCommand(input);
-    }
+void loop() {
+  if (Serial.available()) {
+    String input = Serial.readStringUntil('\n');
+    input.trim();
+    processCommand(input);
   }
+}
